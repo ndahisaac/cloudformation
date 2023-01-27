@@ -1,0 +1,124 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "This is my vpc ",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {"pragmavpc": {
+          "Type": "AWS::EC2::VPC",
+          "Properties": {
+            "CidrBlock": "10.10.0.0/16",
+            "Tags":[{ "Key": "Name", "Value":  "pragmavpc" }]
+          }
+        }, 
+        "pragmavpcIGW": {"Type": "AWS::EC2::InternetGateway",
+          "Properties": {
+           "Tags":[{ "Key": "Name", "Value":  "pragmavpcIGW" }]
+          }
+        },
+        "AttachGateway": {
+          "Type": "AWS::EC2::VPCGatewayAttachment",
+          "Properties": {
+            "VpcId": 
+            { "Ref": "pragmavpc" }
+            ,
+            "InternetGatewayId": { "Ref": "pragmavpcIGW" }
+          }
+        },
+        "pragmapubsub1": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": "us-east-2a",
+            "VpcId":{ "Ref": "pragmavpc" },
+            "CidrBlock": "10.10.1.0/24",
+            "Tags":[ { "Key": "Name", "Value":  "pragmapubsub1" } ]
+          }
+        },
+        "pragmapubsub2": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+              "AvailabilityZone": "us-east-2b",
+              "VpcId":{ "Ref": "pragmavpc" },
+              "CidrBlock": "10.10.2.0/24",
+              "Tags":[ { "Key": "Name", "Value":  "pragmapubsub2" } ]
+            }
+          },
+          "pragmaprvt1": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+              "AvailabilityZone": "us-east-2a",
+              "VpcId":{ "Ref": "pragmavpc" },
+              "CidrBlock": "10.10.3.0/24",
+              "Tags":[ { "Key": "Name", "Value":  "pragmaprvt1" } ]
+            }
+          },
+          "pragmaprvt2": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+              "AvailabilityZone": "us-east-2a",
+              "VpcId":{ "Ref": "pragmavpc" },
+              "CidrBlock": "10.10.4.0/24",
+              "Tags":[ { "Key": "Name", "Value":  "pragmaprvt2" } ]
+            }
+          },
+          
+          "pragmapubRTB": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+              "VpcId": { "Ref": "pragmavpc" },
+              "Tags":[ { "Key": "Name", "Value":  "pragmapubRTB" }]
+            }
+          },
+          "pragmaprvtRTB": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+              "VpcId": { "Ref": "pragmavpc" },
+              "Tags":[ { "Key": "Name", "Value":  "pragmaprvtRTB" }]
+            }
+          },
+    "PragmaRT": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": 
+        { "Ref": "pragmapubRTB" },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": { "Ref": "pragmavpcIGW" }
+      
+    }
+},
+"InstanceSecurityGroup" : {
+    "Type" : "AWS::EC2::SecurityGroup",
+    "Properties" : {
+        "GroupDescription" : "Allow http to client host",
+        "VpcId" : {"Ref" : "pragmavpc"},
+        "SecurityGroupIngress" : [{
+            "IpProtocol" : "tcp",
+            "FromPort" : 80,
+            "ToPort" : 80,
+            "CidrIp" : "0.0.0.0/0"
+        }],
+        "SecurityGroupEgress" : [{
+            "IpProtocol" : "tcp",
+            "FromPort" : 80,
+            "ToPort" : 80,
+            "CidrIp" : "0.0.0.0/0"
+        }]
+    }
+}
+
+
+    },
+    
+    "Outputs": {
+
+    }
+}
