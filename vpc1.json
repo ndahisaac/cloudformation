@@ -1,0 +1,295 @@
+{
+
+    "AWSTemplateFormatVersion": "2010-09-09",
+  
+        "Description": "",
+  
+        "Metadata": {
+  
+    
+  
+        },
+  
+        "Parameters": {
+  
+        "VPCCIDR": {
+  
+            "Description": "For my vpc",
+  
+            "Type": "String"
+  
+        },
+  
+    
+  
+      "PubSubCIDR": {
+  
+          "Description": "For public Subnet",
+  
+          "Type": "String"
+  
+      },
+  
+      "PubSub2CIDR": {
+  
+        "Description": "For public Subnet",
+  
+        "Type": "String"
+  
+      },
+  
+      "PrivateSubCIDR": {
+  
+        "Description": "For private Subnet",
+  
+        "Type": "String"
+  
+      },
+  
+      "PrivateSubCIDR2": {
+  
+        "Description": "For Private Subnet",
+  
+        "Type": "String"
+  
+      },
+  
+    
+  
+      "AZA": {
+  
+          "Description": "US East-1",
+  
+          "Type": "AWS::EC2::AvailabilityZone::Name"
+  
+      },
+  
+      "AZB": {
+  
+        "Description": "US East-1",
+  
+        "Type": "AWS::EC2::AvailabilityZone::Name"
+  
+      }
+  
+    },
+  
+    
+  
+    
+  
+        "Mappings": {
+  
+    
+  
+        },
+  
+        "Conditions": {
+  
+    
+  
+        },
+  
+        "Resources": {
+  
+        "ProdVPC": {
+  
+          "Type": "AWS::EC2::VPC",
+  
+          "Properties": {
+  
+            "CidrBlock": { "Ref": "VPCCIDR" },
+  
+            "Tags": [{ "Key": "Name", "Value":  "ProdVPC" }]
+  
+          }
+  
+        },
+  
+    
+  
+    
+  
+    
+  
+        "ProdVPCIGW": {
+  
+          "Type": "AWS::EC2::InternetGateway",
+  
+          "Properties": {
+  
+            "Tags":[{ "Key": "Name", "Value":  "ProdVPCIGW" }]
+  
+          }
+  
+        },
+  
+        "AttachGateway": {
+  
+          "Type": "AWS::EC2::VPCGatewayAttachment",
+  
+          "Properties": {
+  
+            "VpcId": { "Ref": "ProdVPC" },
+  
+            "InternetGatewayId": { "Ref": "ProdVPCIGW" }
+  
+          }
+  
+        },
+  
+    
+  
+    
+  
+       "ProdRTB": {
+  
+         "Type": "AWS::EC2::RouteTable",
+  
+         "Properties": {
+  
+           "VpcId": { "Ref": "ProdVPC" },
+  
+          "Tags": [{ "Key": "Name", "Value":  "ProdVPCRTB" }]
+  
+         }
+  
+       },
+  
+    
+  
+       "ProdRoute": {
+  
+         "Type": "AWS::EC2::Route",
+  
+         "Properties": {
+  
+           "RouteTableId": { "Ref": "ProdRTB" },
+  
+           "DestinationCidrBlock": "0.0.0.0/0",
+  
+           "GatewayId": { "Ref": "ProdVPCIGW" }
+  
+    
+  
+         }
+  
+       },
+  
+    
+  
+       "PubRouteAss": {
+  
+         "Type": "AWS::EC2::SubnetRouteTableAssociation",
+  
+         "Properties": {
+  
+           "SubnetId": { "Ref": "PublicSub" },
+  
+           "RouteTableId": { "Ref": "ProdRTB" }
+  
+    
+  
+         }
+  
+       },
+  
+    
+  
+       "PubRouteAss2": {
+  
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+  
+        "Properties": {
+  
+          "SubnetId": { "Ref": "PublicSub2" },
+  
+          "RouteTableId": { "Ref": "ProdRTB" }
+  
+        }
+  
+      },
+  
+       "PublicSub": {
+  
+          "Type": "AWS::EC2::Subnet",
+  
+          "Properties": {
+  
+           "AvailabilityZone":  { "Ref": "AZA" },
+  
+            "VpcId": { "Ref": "ProdVPC" },
+  
+            "CidrBlock":  { "Ref": "PubSubCIDR" },
+  
+            "Tags":[{ "Key": "Name", "Value":  "PublicSub" }]
+  
+          }
+  
+        },
+  
+        "PublicSub2": {
+  
+          "Type": "AWS::EC2::Subnet",
+  
+          "Properties": {
+  
+           "AvailabilityZone":  { "Ref": "AZB" },
+  
+            "VpcId": { "Ref": "ProdVPC" },
+  
+            "CidrBlock":  { "Ref": "PubSub2CIDR" },
+  
+            "Tags":[{ "Key": "Name", "Value":  "PublicSub" }]
+  
+          }
+  
+        },
+  
+        "PrivateSub2": {
+  
+          "Type": "AWS::EC2::Subnet",
+  
+          "Properties": {
+  
+            "AvailabilityZone":  { "Ref": "AZB" },
+  
+            "VpcId": { "Ref": "ProdVPC" },
+  
+            "CidrBlock":  { "Ref": "PrivateSubCIDR2" },
+  
+            "Tags":[{ "Key": "Name", "Value":  "PrivateSub2" }]
+  
+          }
+  
+        },
+  
+    
+  
+        "PrivateSub": {
+  
+          "Type": "AWS::EC2::Subnet",
+  
+          "Properties": {
+  
+            "AvailabilityZone":  { "Ref": "AZA" },
+  
+            "VpcId": { "Ref": "ProdVPC" },
+  
+            "CidrBlock":  { "Ref": "PrivateSubCIDR" },
+  
+            "Tags":[{ "Key": "Name", "Value":  "PrivateSub" }]
+  
+          }
+  
+        }
+  
+      },
+  
+        "Outputs": {
+  
+    
+  
+        }
+  
+    }
