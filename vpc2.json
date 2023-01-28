@@ -31,7 +31,7 @@
     "AttachGateway": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
-        "VpcId": "--",
+        "VpcId": "vpcdemo",
         "InternetGatewayId": { "Ref": "demoIGW" }
       }
     }
