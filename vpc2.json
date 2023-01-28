@@ -1,0 +1,46 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Created for vpc demo",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": { 
+    "vpcdemo": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.10.0.0/16",
+       "Tags":[{ "Key": "Name", "Value":  "vpcdemo" }]
+      }
+    },
+    
+    "demoIGW": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags":[{ "Key": "Name", "Value":  "demoIGW" }]
+      }
+    },
+    "AttachGateway": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": "--",
+        "InternetGatewayId": { "Ref": "igwName" }
+      }
+    }
+    
+    
+
+    },
+    "Outputs": {
+
+    }
+}
+# this code is to create 5 ec2 instances in the availability zone 1 and zone respectly 
